@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types';
 
-import { useEffect } from 'react';
+import { useEffect, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 
 import css from './Modal.module.css';
@@ -8,19 +8,22 @@ import css from './Modal.module.css';
 const modalRoot = document.querySelector('#modal-root');
 
 export const Modal = ({ toggleModal, children }) => {
+  const onEsc = useCallback(
+    event => {
+      if (event.code === 'Escape') {
+        toggleModal();
+      }
+    },
+    [toggleModal]
+  );
+
   useEffect(() => {
     window.addEventListener('keydown', onEsc);
 
     return () => {
       window.removeEventListener('keydown', onEsc);
     };
-  }, []);
-
-  const onEsc = event => {
-    if (event.code === 'Escape') {
-      toggleModal();
-    }
-  };
+  }, [onEsc]);
 
   const onOverlay = event => {
     if (event.target === event.currentTarget) {
